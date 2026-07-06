@@ -10,6 +10,7 @@ import ru.practicum.moviehub.store.MoviesStore;
 import java.io.IOException;
 import java.util.Optional;
 
+
 public class MoviesDeleteHandler extends BaseHttpHandler {
     private final MoviesStore store;
 
@@ -23,14 +24,14 @@ public class MoviesDeleteHandler extends BaseHttpHandler {
         try {
             int id = parseId(exchange);
 
-            Optional<Movie> movieOpt = Optional.ofNullable(store.getMovies().get(id));
+            Optional<Movie> movieOpt = store.findById(id);
 
             if (movieOpt.isEmpty()) {
                 sendResponse(exchange, Messages.MOVIE_NOT_FOUND, HttpStatus.NOT_FOUND);
                 return;
             }
 
-            store.getMovies().remove(id);
+            store.deleteById(id);
             sendResponse(exchange, Messages.EMPTY, HttpStatus.NO_CONTENT);
         } catch (InvalidIdException e) {
             sendResponse(exchange, e.getMessage(), HttpStatus.BAD_REQUEST);

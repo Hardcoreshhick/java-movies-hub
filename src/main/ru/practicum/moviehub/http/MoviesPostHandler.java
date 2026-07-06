@@ -65,9 +65,8 @@ public class MoviesPostHandler extends BaseHttpHandler {
             return;
         }
 
-        movie.setId(store.getNextId());
-        store.getMovies().put(movie.getId(), movie);
-        String response = gson.toJson(movie);
+        Movie saved = store.save(movie);
+        String response = gson.toJson(saved);
         sendResponse(exchange, response, HttpStatus.CREATED);
     }
 }

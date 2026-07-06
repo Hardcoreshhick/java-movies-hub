@@ -8,7 +8,6 @@ import ru.practicum.moviehub.store.MoviesStore;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MoviesGetAllHandler extends BaseHttpHandler {
     private final MoviesStore store;
@@ -23,7 +22,7 @@ public class MoviesGetAllHandler extends BaseHttpHandler {
         String query = exchange.getRequestURI().getQuery();
 
         if (query == null) {
-            List<Movie> allMovies = List.copyOf(store.getMovies().values());
+            List<Movie> allMovies = store.findAll();
             String json = gson.toJson(allMovies);
             sendResponse(exchange, json, HttpStatus.OK);
             return;
@@ -37,9 +36,7 @@ public class MoviesGetAllHandler extends BaseHttpHandler {
 
         try {
             int year = Integer.parseInt(parts[1]);
-            List<Movie> filtered = store.getMovies().values().stream()
-                    .filter(m -> m.getYear() == year)
-                    .collect(Collectors.toUnmodifiableList());
+            List<Movie> filtered = store.findByYear(year);
 
             String json = gson.toJson(filtered);
             sendResponse(exchange, json, HttpStatus.OK);

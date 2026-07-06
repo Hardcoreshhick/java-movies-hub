@@ -9,7 +9,6 @@ import ru.practicum.moviehub.model.Movie;
 import ru.practicum.moviehub.store.MoviesStore;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class MoviesGetByIdHandler extends BaseHttpHandler {
     private final MoviesStore store;
@@ -19,14 +18,13 @@ public class MoviesGetByIdHandler extends BaseHttpHandler {
         this.store = store;
     }
 
-
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("GET /movies/{id}");
 
         try {
             int id = parseId(exchange);
-            Movie movie = Optional.ofNullable(store.getMovies().get(id))
+            Movie movie = store.findById(id)
                     .orElseThrow(() -> new NotFoundException(Messages.MOVIE_NOT_FOUND));
 
             String json = gson.toJson(movie);
